@@ -1,0 +1,63 @@
+using UnityEngine;
+using System.Collections;
+
+public class ChangeCubeColor : MonoBehaviour {
+
+    public float colorSpeed = 5f;
+    public Color[] cubeColors;
+
+    Renderer renderer;
+    Color currColor;
+    int lookingAtColor = 0;
+
+    void Start()
+    {
+        renderer = GetComponent<Renderer>();
+        currColor = renderer.material.color;
+        Debug.Log(name + "'s color value started at " + currColor);
+    }
+
+    void Update()
+    {
+        //ChangeColorsGradual();
+    }
+
+    void ChangeColorsInstant()
+    {
+        currColor = cubeColors[lookingAtColor];
+
+        if (ColorsAreCloseEnough(currColor, cubeColors[lookingAtColor]))
+        {
+            lookingAtColor++;
+            if (lookingAtColor > cubeColors.Length - 1)
+                lookingAtColor = 0;
+        }
+
+        renderer.material.color = currColor;
+    }
+
+    void ChangeColorsGradual()
+    {
+        currColor = Vector4.Lerp(currColor, cubeColors[lookingAtColor], colorSpeed * Time.deltaTime);
+
+        if (ColorsAreCloseEnough(currColor, cubeColors[lookingAtColor]))
+        {
+            lookingAtColor++;
+            if (lookingAtColor > cubeColors.Length - 1)
+                lookingAtColor = 0;
+        }
+
+        renderer.material.color = currColor;
+    }
+
+    bool ColorsAreCloseEnough(Color c1, Color c2)
+    {
+        if (Mathf.Abs(c1.r - c2.r) < 0.1f &&
+            Mathf.Abs(c1.g - c2.g) < 0.1f &&
+            Mathf.Abs(c1.b - c2.b) < 0.1f &&
+            Mathf.Abs(c1.a - c2.a) < 0.1f)
+            return true;
+
+        return false;
+    }
+}
